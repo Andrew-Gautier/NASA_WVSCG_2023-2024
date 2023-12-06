@@ -1,0 +1,1247 @@
+
+
+
+
+using namespace std;
+
+ const char debug=0;
+	
+
+	 void promote_root() {
+	        if (debug) {
+	                
+	                cout<<"You are root now..."<<endl;
+	        }
+	}
+	 
+	
+
+int main(int argc, const char *argv[])
+{
+	for(int i=0;i<argc;i++){
+			string s(argv[i]);
+			if(s=="-root"){
+				promote_root();
+			}
+		}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+using namespace std;
+using namespace cgicc;
+
+namespace security {
+	string charSanatizer(const char c) {
+		switch(c) {
+			case '<': return "&lt;";
+			case '>': return "&gt;";
+			case '\'':return "&aquot;";
+			case '"': return "&quot;";
+			case '\n':
+			case '\0':return " ";
+			default : return string(1,c);
+		}
+	}
+	
+	string clean(const std::string& input)
+	{
+		string output;
+		for (string::const_iterator iter=input.begin();iter!=input.end();++iter)
+			output += charSanatizer(*iter);
+		return output;
+	}
+}
+
+int main()
+{
+	try
+	{
+		Cgicc cgi;
+		cout << HTTPHTMLHeader() << endl;
+		cout << HTMLDoctype(HTMLDoctype::eStrict) << endl;
+		cout << html().set("lang", "EN").set("dir", "LTR") << endl;
+		
+		cout << html() << head() << title("Test Case: XSS/Basic") << head() << endl;
+		cout << body().set("bgcolor","#cccccc") << endl;
+		cout << h1("Test Case: XSS/Basic") << endl;
+		const_form_iterator iter;
+		for(iter = cgi.getElements().begin(); iter != cgi.getElements().end(); ++iter) {
+			cout << security::clean(iter->getName()) << " -&gt; " << security::clean(iter->getValue()) << "<br />" << endl;
+		}
+		cout << body() << html();
+	}
+	catch(const exception& e)
+	{
+		cout << "Exception: " << e.what() << endl;
+	}
+	return 0;	
+}
+
+
+
+
+
+
+using namespace std;
+
+class Bot
+{
+	std::string name;
+	std::string func;
+public:
+	Bot(const std::string& _name = "Nono", const std::string& _func = "_gentil_robot")
+	  : name(_name), func(_func)
+	{}
+	Bot(const Bot& bot) 
+	: name(bot.name), func(bot.func)
+	{}
+	~Bot() {}
+
+	Bot& operator=(const Bot& bot) {
+		name = bot.name;
+		func = bot.func;
+		return *this;
+	}
+
+	void action() {
+		std::cout << name << " \t" << func << ";" << std::endl;
+	}
+};
+
+vector<Bot *> pBots;
+
+string names[] = {"Botty","Fool","iRobot"};
+string funcs[] = {"_friend", "_coffee","_plop"};
+
+int main()
+{
+	Bot def;
+	const unsigned short max_nf = 3;
+	
+	for (unsigned short i=0;i<max_nf;++i) {
+		pBots.push_back(new Bot(names[i], funcs[i]));
+	}
+
+	for (vector<Bot *>::const_iterator iter = pBots.begin(); iter != pBots.end(); ++iter)
+		(*iter)->action();
+
+	
+	for (vector<Bot *>::iterator iter = pBots.begin(); iter != pBots.end(); ++iter)
+		delete *iter;
+
+	return 0;
+}
+
+
+
+
+
+
+using namespace std;
+
+void test(void)
+{
+        char buf[MAXSIZE];
+        cin.width(MAXSIZE-1);
+        cin>>buf;               
+        cout<<"result: "<<buf<<endl;
+}
+
+int main(int argc, char **argv)
+{
+        test();
+        return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+using namespace std;
+using namespace cgicc;
+
+
+namespace security {
+	string charSanatizer(const char c) {
+		switch(c) {
+			case '<': return "&lt;";
+			case '>': return "&gt;";
+			case '\'':return "&aquot;";
+			case '"': return "&quot;";
+			case '\n':
+			case '\0':return " ";
+			default : return string(1,c);
+		}
+	}
+	
+	string clean(const std::string& input)
+	{
+		string output;
+		for (string::const_iterator iter=input.begin();iter!=input.end();++iter)
+			output += charSanatizer(*iter);
+		return output;
+	}
+}
+
+string output(const string& name, const string& value)
+{
+	return security::clean(name) + " -&gt; " + security::clean(value);
+}
+
+int main()
+{
+	try
+	{
+		Cgicc cgi;
+		cout << HTTPHTMLHeader() << endl;
+		cout << HTMLDoctype(HTMLDoctype::eStrict) << endl;
+		cout << html().set("lang", "EN").set("dir", "LTR") << endl;
+		
+		cout << html() << head() << title("Test Case: XSS/Basic") << head() << endl;
+		cout << body().set("bgcolor","#cccccc") << endl;
+		cout << h1("Test Case: XSS/Basic") << endl;
+		const_form_iterator iter;
+		for(iter = cgi.getElements().begin(); iter != cgi.getElements().end(); ++iter) {
+			cout << output(iter->getName(),iter->getValue()) << endl;;
+		}
+		cout << body() << html();
+	}
+	catch(const exception& e)
+	{
+		cout << "Exception: " << e.what() << endl;
+	}
+	return 0;	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+using namespace std;
+using namespace cgicc;
+
+namespace security {
+	string charSanatizer(const char c) {
+		switch(c) {
+			case '<': return "&lt;";
+			case '>': return "&gt;";
+			case '\'':return "&aquot;";
+			case '"': return "&quot;";
+			case '\n':
+			case '\0':return " ";
+			default : return string(1,c);
+		}
+	}
+	
+	string clean(const std::string& input)
+	{
+		string output;
+		for (string::const_iterator iter=input.begin();iter!=input.end();++iter)
+			output += charSanatizer(*iter);
+		return output;
+	}
+}
+
+int main()
+{
+	try
+	{
+		Cgicc cgi;
+		cout << HTTPHTMLHeader() << endl;
+		cout << HTMLDoctype(HTMLDoctype::eStrict) << endl;
+		cout << html().set("lang", "EN").set("dir", "LTR") << endl;
+		
+		cout << html() << head() << title("Test Case: XSS") << head() << endl;
+		cout << body().set("bgcolor","#fafafa") << endl;
+		cout << h1("Test Case: XSS") << endl;
+		std::map<string, string> parameters;
+		for(const_form_iterator iter = cgi.getElements().begin(); iter != cgi.getElements().end(); ++iter) {
+			parameters[iter->getName()] = iter->getValue();
+		}
+		
+		for (std::map<string,string>::const_iterator iter=parameters.begin();iter!=parameters.end();++iter)
+			cout << security::clean(iter->second) << "<br />" << endl;
+		cout << body() << html();
+	}
+	catch(const exception& e)
+	{
+		cout << "Exception: " << e.what() << endl;
+	}
+	return 0;	
+}
+
+
+
+
+using namespace std;
+
+
+int main() 
+{
+	int integer = 0;
+	if (integer == 0)
+		cout << "integer == 0: " << integer << endl;
+	else
+		cout << "integer != 0: " << integer << endl;
+	return 0;
+}
+
+
+
+
+
+
+using namespace std;
+
+int x[3] = {1208, 2001, 42};
+
+int main()
+{
+	int *p = x;
+	int *second_char = (int *)(p + 1);
+	cout << *second_char << endl;
+}
+
+
+
+
+
+
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+	if (argc < 2) {
+		cout << "You should give an entry parameter..." << endl;
+		cout << "Usage: ./sql <parameter>" << endl;
+		return 0;
+	}
+
+	mysqlpp::Connection con(false);
+	con.connect("kikoo", "user","userpass");
+
+	mysqlpp::Query query = con.query();
+	query << "SELECT * FROM test WHERE Value = '" << mysqlpp::escape << argv[1] << "'";
+	mysqlpp::Result res = query.store();
+
+	
+	cout << "Results: " << endl;
+	if (res) {
+		mysqlpp::Row row;
+		mysqlpp::Row::size_type i;
+		for (i=0; row = res.at(i); ++i)
+			cout << "\t" << row.at(0) << endl;
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+using namespace std;
+
+void buildQuery(mysqlpp::Query& query, const char *params) {
+	query << "SELECT * FROM test WHERE Value = '" << mysqlpp::escape << string(params) << "'";	
+}
+
+int main(int argc, char *argv[])
+{
+	if (argc < 2) {
+		cout << "You should give an entry parameters..." << endl;
+		cout << "Usage: ./sql <parameter1>" << endl;
+		return 0;
+	}
+
+	mysqlpp::Connection con(false);
+	con.connect("kikoo", "user","userpass");
+
+	mysqlpp::Query query = con.query();
+	buildQuery(query, argv[0]);
+	mysqlpp::Result res = query.store();
+
+	
+	cout << "Results: " << endl;
+	if (res) {
+		mysqlpp::Row row;
+		mysqlpp::Row::size_type i;
+		for (i=0; row = res.at(i); ++i)
+			cout << "\t" << row.at(0) << endl;
+	}
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+int main() 
+{
+	for (int p=3; p < 10; ++p)
+	{
+		cout << "~foo" << endl;
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+	if (argc < 2) {
+		cout << "You should give an entry parameters..." << endl;
+		cout << "Usage: ./sql <parameter1> <parameter2> ..." << endl;
+		return 0;
+	}
+
+	vector<string> parameters;
+	for (int i=1;i<argc;i++) {
+		parameters.push_back(string(argv[i]));
+	}
+
+	mysqlpp::Connection con(false);
+	con.connect("kikoo", "user","userpass");
+
+	mysqlpp::Query query = con.query();
+	query << "SELECT * FROM test WHERE 0=1 ";
+	
+	for (vector<string>::const_iterator iter=parameters.begin(); iter!=parameters.end(); ++iter) {
+		query << " OR Value = '" << mysqlpp::escape << string(*iter) << "' ";
+	}
+	mysqlpp::Result res = query.store();
+
+	
+	cout << "Results: " << endl;
+	if (res) {
+		mysqlpp::Row row;
+		mysqlpp::Row::size_type i;
+		for (i=0; row = res.at(i); ++i)
+			cout << "\t" << row.at(0) << endl;
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+using namespace std;
+
+
+int main()
+{
+	vector<int> array(10, 42);
+	try {
+		array.at(10) = 10;
+	}
+	catch(const exception& e) {
+		cout << "Exception: " << e.what() << endl;
+	}
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+int main()
+{
+	int *p = 0, k;
+	cout << "Hello World!" << endl;
+	if (p)
+		k = *p;
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+
+void function(int *ptr, int& value) {
+	if (!ptr)
+		return;
+	value = *ptr;
+}
+
+int main()
+{
+	int *p = 0, k;
+	cout << "Hello World!" << endl;
+	function(p,k);
+	return 0;
+}
+
+
+
+
+using namespace std;
+
+int main()
+{
+	int *p = 0, k, s = (rand() % 2);
+	cout << "Hello World!" << endl;
+	if (s == 0) {
+		if (p)
+			k = *p;
+	}
+	return 0;
+}
+
+
+
+
+using namespace std;
+
+int main()
+{
+	int *tab[1] = {(int *)0};
+	cout << "Hello World!" << endl;
+	int c;
+	if (*tab) {
+		c = *(tab[0]);
+	}
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+const string ALLOWED[5]={
+  "users_site.dat",
+   "users_reg.dat",
+   "users_info.dat",
+   "admin.dat",
+   "services.dat.cxx"
+};
+
+bool allowed(string in){
+	for(int i=0;i<5;i++){
+		if(ALLOWED[i]==in){
+			return true;
+		}
+	}
+	return false;
+}
+
+int main(int argc, const char *argv[])
+{
+	if(argc>1){
+		string fName(argv[1]);
+		if(allowed(fName)){
+			ifstream in(fName.c_str());
+			char temp[100];
+			while(!in.getline(temp, 100).fail()&&!in.eof())
+			{
+				cout <<temp<<endl;
+			}
+			cout << temp<<endl;
+		}
+	}
+    return 0;
+}
+
+
+
+
+
+
+using namespace std;
+
+const string ALLOWED[5]={
+  "users_site.dat",
+   "users_reg.dat",
+   "users_info.dat",
+   "admin.dat",
+   "services.dat.cxx"
+};
+
+bool allowed(string in){
+	for(int i=0;i<5;i++){
+		if(ALLOWED[i]==in){
+			return true;
+		}
+	}
+	return false;
+}
+
+const char *outputFName(const char *__str) {
+	return __str;
+}
+
+int main(int argc, const char *argv[])
+{
+	if(argc>1&&allowed(outputFName(argv[1]))){
+		ifstream in(outputFName(argv[1]));
+		char temp[100];
+		while(!in.getline(temp, 100).fail()&&!in.eof())
+		{
+			cout <<temp<<endl;
+		}
+		cout << temp<<endl;
+	}
+    return 0;
+}
+
+
+
+
+
+
+using namespace std;
+
+const string ALLOWED[5]={
+  "users_site.dat",
+   "users_reg.dat",
+   "users_info.dat",
+   "admin.dat",
+   "services.dat.cxx"
+};
+
+bool allowed(string in){
+	for(int i=0;i<5;i++){
+		if(ALLOWED[i]==in){
+			return true;
+		}
+	}
+	return false;
+}
+
+
+int main(int argc, const char *argv[])
+{
+	if(argc>1&&allowed(argv[1])){
+		ifstream in(argv[1]);
+		char temp[100];
+		while(!in.getline(temp, 100).fail()&&!in.eof())
+		{
+			cout <<temp<<endl;
+		}
+		cout << temp<<endl;
+	}
+    return 0;
+}
+
+
+
+
+
+using namespace std;
+string valid("One Two");
+
+int main(int argc, const char *argv[])
+{
+	string cmd("dir ");
+	if(argc>1&&valid.find(argv[1])!= string::npos){
+		cmd.append(argv[1]);
+		cout<<system(cmd.c_str())<<endl;
+	}
+	
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+string valid("One Two");
+
+int main(int argc, const char *argv[])
+{
+	string cmd("dir ");
+	char isValid=valid.find(argv[1])!= string::npos;
+	switch(isValid){
+	case 1 :
+		if(argc>1){
+			cmd.append(argv[1]);
+			cout<<system(cmd.c_str())<<endl;
+		}
+		break;
+	case 0 : 
+		break;
+		
+	default : 
+		break;
+	}
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+string valid("One Two");
+
+int main(int argc, const char *argv[])
+{
+	for(int i=1;i<argc;i++){
+			string cmd("dir ");
+			cmd.append(argv[i]);
+			if(valid.find(argv[1])!= string::npos){
+				cout<<system(cmd.c_str())<<endl;
+			}
+	}	
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+string valid("One Two");
+
+const char * retStr(const char *in){
+	return in;
+}
+
+int main(int argc, const char *argv[])
+{
+	string cmd("dir ");
+	if(argc>1&&valid.find(argv[1])!= string::npos){
+		cmd.append(retStr(argv[1]));
+		cout<<system(cmd.c_str())<<endl;
+	}
+	
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+int main (){
+vector<int> v( 5, 1 ); 
+for( int i = 0; i < 5; i++ ) 
+	{  v[i]=i ;
+	   cout << "Element " << i << " is " << v[i] << endl; 
+        }              
+return 0;
+}
+
+
+
+
+
+
+
+using namespace std;
+
+const string ALLOWED[5]={
+  "users_site.dat",
+   "users_reg.dat",
+   "users_info.dat",
+   "admin.dat",
+   "services.dat.cxx"
+};
+
+
+typedef class cont_o cont;
+
+class cont_o
+   {
+       private:
+         string name; 
+       public:
+         cont_o(const string& n)
+           : name(n) 
+         { 
+         }
+         string getName(){
+         	return name;
+         }
+         ~cont_o(){
+	        
+         }
+};
+
+bool allowed(string in){
+	for(int i=0;i<5;i++){
+		if(ALLOWED[i]==in){
+			return true;
+		}
+	}
+	return false;
+}
+
+int main(int argc, const char *argv[])
+{
+	if (argc > 1){
+		cont container(argv[1]);
+		if(allowed(container.getName())){
+			ifstream in(container.getName().c_str());
+			char temp[100];
+			while(!in.getline(temp, 100).fail()&&!in.eof())
+			{
+				cout <<temp<<endl;
+			}
+			cout << temp<<endl;
+		}
+	}
+    return 0;
+}
+
+
+
+
+
+using namespace std;
+
+bool verifyPassword(const string& pass) {
+	
+	
+	
+	return true;
+}
+
+
+bool user_ok(const string& userpass)
+{
+	if (verifyPassword(userpass))
+		return true;
+	return false;
+}
+
+int main()
+{
+	string userpass;
+	cout << "Enter your password: " << endl;
+	cin >> userpass;
+
+	if (user_ok(userpass))
+		cout << "You are now identified." << endl;
+	else
+		cout << "Your password is not valid, please reenter it." << endl;
+
+	return 0;
+}
+
+
+
+
+
+
+using namespace std;
+
+vector<string> passlist;
+
+void getDefaultPassword(vector<string>& vectPassList) {
+	
+	return;
+}
+
+void initialize()
+{
+	getDefaultPassword(passlist);
+}
+
+bool user_ok(const string& userpass)
+{
+	for (vector<string>::const_iterator iter = passlist.begin(); iter != passlist.end(); ++iter)
+	{
+		if (*iter == userpass)
+			return true;
+	}
+	return false;
+}
+
+int main()
+{
+	initialize();
+	string userpass;
+	cout << "Enter your password: " << endl;
+	cin >> userpass;
+
+	if (user_ok(userpass))
+		cout << "You are now identified." << endl;
+	else
+		cout << "Your password is not valid, please reenter it." << endl;
+
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+string getUserPassword(const string& username) {
+	string pass;
+	
+	return pass;
+}
+
+
+bool user_ok(const string& userpass, const string& username)
+{
+	if (userpass == getUserPassword(username))
+		return true;
+	return false;
+}
+
+int main(int argc, char *argv[])
+{
+	if (argc > 2)
+	{
+		if (user_ok(argv[2], argv[1]))
+			cout << "You are now identified." << endl;
+		else
+			cout << "Your password is not valid, please reenter it." << endl;
+	}
+	else
+		cout << "Usage: ./bin <user> <password>" << endl;
+
+	return 0;
+}
+
+
+
+
+
+using namespace std;
+
+string getDefaultPassword() {
+	string pass;
+	
+	return pass;
+}
+
+bool user_ok(const string& userpass)
+{
+	if (userpass == getDefaultPassword())
+		return true;
+	return false;
+}
+
+
+int main()
+{
+	string userpass = "";
+	unsigned int nbT=  0;
+	cout << "Enter your password: " << endl;
+	cin  >> userpass;
+	while (!user_ok(userpass) && (++nbT < 4))
+	{
+		cout << "Your password is not valid, please reenter it." << endl;
+		cin  >> userpass;
+	}
+	if (nbT == 4) return 0;
+	cout << "You are now identified." << endl;
+
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+class User
+{
+	std::string username;
+	std::string userpass;
+public:
+	User(const std::string& _username = "", const std::string& _userpass = "") {
+		username = _username;
+		userpass = _userpass;
+	}
+	User(const User& user) {
+		username = user.username;
+		userpass = user.userpass;
+	}
+	~User() {}
+
+	inline bool identification(const std::string& name, const std::string& pass) const {
+		return (name == username && pass == userpass);
+	}
+	
+	inline User& operator=(const User& user) {
+		username = user.username;
+		userpass = user.userpass;
+		return *this;
+	}
+
+	friend bool operator==(const User& user1, const User& user2);
+};
+
+
+bool operator==(const User& user1, const User& user2) {
+	return (user1.username == user2.username && user1.userpass == user2.userpass);
+}
+
+User getAdminUser()
+{
+	User tempAdmin;
+	
+	return tempAdmin;
+}
+
+
+
+using namespace std;
+
+User admin = getAdminUser();
+
+int main()
+{
+	string userpass = "";
+	string username = "";
+	cout << "1) Identity Check" << endl;
+	cout << "username: " << endl;
+	cin  >> username;
+	cout << "password: " << endl;
+	cin  >> userpass;
+
+	User user(username, userpass);
+	if (user == admin) {
+		cout << "Hello Admin!" << endl;
+	}
+	else
+		cout << "Your personal information seem to be wrong, please reenter." << endl;
+
+	return 0;
+}
+
+
+
+
+using namespace std;
+
+
+void function() {
+	short *p = 0;
+	try {
+                p = new short [1000];
+            }
+ 	catch (bad_alloc&)
+	{
+	  cout << "Error allocating memory." << endl;
+	}
+
+	if (p) delete [] p;
+	return;
+}
+
+int main()
+{
+	int i,j;
+	cout<<"Please enter two numbers: "<<endl;
+	cin>>i>>j;
+	
+	if (i==j) function();
+	return 0;
+}
+
+
+
+
+using namespace std;
+	
+
+int main() 
+{
+	int i,n;
+	int * p;
+	i = 10;
+	p = new (nothrow) int[100];
+	if (p == 0)
+    		cout << "Error: memory could not be allocated";
+  	else
+		{for (n=0; n<i; n++) p[n] = n;
+		 
+		 delete []p;}
+    				
+	return 0;
+}
+
+
+
+
+
+
+
+using namespace std;
+
+
+int main() {
+	char *buf;
+	buf = new (nothrow) char[BUFSIZE];
+	if (buf != 0)
+		{buf[30]='a';
+		delete [] buf;}
+	else cout << "Error: memory could not be allocated";
+ 
+	return 0;
+}
+
+
+
+
+using namespace std;
+
+
+void tester (const char *__str) {
+	char *test = new (nothrow) char[BUFSIZE+1];
+	if (test!= 0)
+	{test[strlen(__str)%BUFSIZE]='a';
+	delete [] test;}
+	else cout << "Error: memory could not be allocated";
+	return;
+}
+
+int main(int argc, const char *argv[])
+{
+	if (argc > 1){
+		const char *userstr=argv[1];
+		tester(userstr);
+	}
+	return 0;
+}
+
+
+
+using namespace std;
+
+
+
+typedef char * cptr;
+
+int main()
+{
+	cptr buf[3] = {"a","b","c"};
+	
+	try {buf[2] = new char[5*sizeof(char)];}
+
+	catch (bad_alloc&)
+	{
+	  cout << "Error allocating memory." << endl;
+	  return 0;
+	}
+	buf[2][1]='a';
+	delete [] buf[2];
+	return 0;
+}
+
+
+
+
+using namespace std;
+
+
+int main() 
+{
+	int integer = 0;
+	if (integer == 0)
+		cout << "integer == 0: " << integer << endl;
+	else
+		cout << "integer != 0: " << integer << endl;
+	return 0;
+}
+
+
+
+
+
+
+using namespace std;
+
+int main() 
+{
+	for (int p=3; p < 10; ++p)
+	{
+		cout << "~foo" << endl;
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+using namespace std;
+
+ const char debug=0;
+	
+
+	 void promote_root() {
+	        if (debug) {
+	                
+	                cout<<"You are root now..."<<endl;
+	        }
+	}
+	 
+	
+
+int main(int argc, const char *argv[])
+{
+	for(int i=0;i<argc;i++){
+			string s(argv[i]);
+			if(s=="-root"){
+				promote_root();
+			}
+		}
+	return 0;
+}
+
