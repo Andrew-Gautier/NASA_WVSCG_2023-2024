@@ -67,7 +67,7 @@ if __name__ == '__main__':
         return data['runs'][0]['results']
 
     def main():
-        root_dir = 'C:\\Users\\Andrew\\Desktop\\C++ mini test'  # Replace with your root directory
+        root_dir = 'C:\\Users\\Andrew\\Desktop\\Taxonomy of buffer overflows'  # Replace with your root directory
         for dir_name, _, file_list in os.walk(root_dir):
             for file_name in file_list:
                 if file_name == 'manifest.sarif':

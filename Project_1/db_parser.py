@@ -3,7 +3,8 @@ import os
 import re
 from sarif_om import SarifLog
 import json
-from db_loader import Folder, SourceCodeFile, Manifest, Vulnerability, session
+from db_loader import Folder, SourceCodeFile, Manifest, Vulnerability, sessionmaker, engine
+from sqlalchemy import text
 
 def remove_comments(root_dir):
     for dir_name, _, file_list in os.walk(root_dir):
@@ -11,18 +12,30 @@ def remove_comments(root_dir):
             if file_name.endswith(('.c', '.php', '.cpp', '.java', '.cs')):
                 file_path = os.path.join(dir_name, file_name)
                 with open(file_path, 'r', encoding='utf-8') as file:
-                    content = file.read()
+                    lines = file.readlines()
 
-                # Remove single-line comments
-                content = re.sub(r'//.*|^\s*#.*', '', content, flags=re.MULTILINE)
+                in_multi_line_comment = False
 
-                # Remove multi-line comments
-                content = re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+                for i, line in enumerate(lines):
+                    # Handle multi-line comments
+                    if '/*' in line:
+                        in_multi_line_comment = True
+                        lines[i] = re.sub(r'/\*.*$', '', line)
+                        continue
 
-                content = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
+                    if in_multi_line_comment:
+                        if '*/' in line:
+                            in_multi_line_comment = False
+                            lines[i] = re.sub(r'^.*\*/', '', line)
+                        else:
+                            lines[i] = ''
+                        continue
+
+                    # Handle single-line comments
+                    lines[i] = re.sub(r'//.*|^\s*#.*', '', line)
 
                 with open(file_path, 'w', encoding='utf-8') as file:
-                    file.write(content)
+                    file.writelines(lines)
 
 def remove_files_except_code_and_sarif(root_dir):
                         code_extensions = ['.c', '.cpp', '.php', '.java', '.cs']
@@ -97,51 +110,48 @@ def sarifparser(root_dir):
     return info_list
 
 
-def store_in_database(info_list):
-    # Add code to store info_list in the database
-    pass
 
 def main():
-    output_dir = ''
-    root_dir = 'C:\\Users\\Andrew\\Desktop\\C++ mini test 2'
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    session.execute(text("PRAGMA foreign_keys=ON"))
+    root_dir = 'C:\\Users\\Andrew\\Desktop\\Java Test Suite for Source Code Analyzer - false positive'
 
-    remove_comments(root_dir)
+
     remove_files_except_code_and_sarif(root_dir)
     info_list = sarifparser(root_dir)
-
-    # Get the file extensions in the root_dir
-    file_extensions = set()
-    file_list = []
-    for dirpath, dirnames, filenames in os.walk(root_dir):
+    print (info_list)
+    new_folder = Folder(folder_name='Java Test Suite for Source Code Analyzer - false positive')
+    session.add(new_folder)
+    session.commit()
+    session.execute(text("PRAGMA foreign_keys=ON"))
+    # Walk the directory structure once
+    for dirpath, _, filenames in os.walk(root_dir):
         for file_name in filenames:
             file_extension = os.path.splitext(file_name)[1]
-            file_extensions.add(file_extension)
-            file_list.append(file_name)
-            print(file_name)
-            print(file_extension)
-    for info in info_list:
-        full_path = os.path.join(root_dir, info.codepath)
-        with open(full_path, 'r') as file:
-            file_content = file.read()
+            path = os.path.join(dirpath, file_name)
+            with open(path, 'r') as file_obj:
+                file_content = file_obj.read()
 
+            new_file = SourceCodeFile(folder=new_folder, file_name= file_name, file_extension=file_extension, file_content=file_content)
+            session.add(new_file)
+            new_manifest = Manifest(source_code_file=new_file, sarif_content=file_content)
+            session.add(new_manifest)
+            session.commit()
+            session.execute(text("PRAGMA foreign_keys=ON"))
+            for info in info_list:
+                state, start_line, codepath = info
+                
+                if os.path.basename(codepath) == file_name:
+                    existing_vulnerability = session.query(Vulnerability).filter_by(manifest_id=new_manifest.manifest_id, line_number=start_line, vulnerability_type=state).first()
+                    if not existing_vulnerability:
+                        new_vulnerability = Vulnerability(manifest_id=new_manifest.manifest_id, line_number=start_line, vulnerability_type=state)
+                        session.add(new_vulnerability)
+ 
 
-        # 11-28-2023 Here is where I am going to start working on the database loading. 
-        new_folder = Folder(folder_name='11-29_test_folder')
-        session.add(new_folder)
-
-        new_file = SourceCodeFile(folder=new_folder, file_name=info.codepath, file_extension=file_extensions, file_content=file_content)
-        session.add(new_file)
-
-        # Create a new manifest for the new file
-        new_manifest = Manifest(source_code_file=new_file, sarif_content='{}')
-        session.add(new_manifest)
-
-        # Create a new vulnerability for the new manifest
-        new_vulnerability = Vulnerability(manifest=new_manifest, line_number= info.start_line, vulnerability_type=info.state)
-        session.add(new_vulnerability) 
-
-        # Commit the session to save the objects to the database
-        session.commit()
+    session.commit()
+    session.execute(text("PRAGMA foreign_keys=ON"))
 
 if __name__ == '__main__':
     main()
+    

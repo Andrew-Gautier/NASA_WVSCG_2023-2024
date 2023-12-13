@@ -20,3 +20,4 @@ for root, dirnames, filenames in os.walk(r'C:\Users\Andrew\Desktop\Cleaned C++ m
     for filename in filenames:
         if filename.endswith(('.cpp', '.cs', '.java', '.php', '.c')):
             remove_comments(os.path.join(root, filename))
+            # testing testing
