@@ -3,7 +3,7 @@ import os
 import re
 from sarif_om import SarifLog
 import json
-from db_loader import Folder, SourceCodeFile, Manifest, Vulnerability, sessionmaker, engine
+from Project_1.sarif_loader import Folder, SourceCodeFile, Manifest, Vulnerability, sessionmaker, engine
 from sqlalchemy import text
 
 def remove_comments(root_dir):
@@ -115,13 +115,13 @@ def main():
     Session = sessionmaker(bind=engine)
     session = Session()
     session.execute(text("PRAGMA foreign_keys=ON"))
-    root_dir = 'C:\\Users\\Andrew\\Desktop\\Java Test Suite for Source Code Analyzer - false positive'
+    root_dir = 'C:\\Users\\Andrew\\Desktop\\C# Vulnerability Test Suite (sample)'
 
 
     remove_files_except_code_and_sarif(root_dir)
     info_list = sarifparser(root_dir)
-    print (info_list)
-    new_folder = Folder(folder_name='Java Test Suite for Source Code Analyzer - false positive')
+ 
+    new_folder = Folder(folder_name='C# Vulnerability Test Suite (sample)')
     session.add(new_folder)
     session.commit()
     session.execute(text("PRAGMA foreign_keys=ON"))

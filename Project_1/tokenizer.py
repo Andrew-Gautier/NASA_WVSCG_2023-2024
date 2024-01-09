@@ -186,7 +186,9 @@ def main():
     with open('file_names.txt', 'w') as file:
         for file_path in file_paths:
             file.write(file_path + '\n')
-
+    
+    # Here is where I was having troubles, see https://stackoverflow.com/questions/77513113/sentencepiece-tokenizer-incorrectly-concatenating-input-files?noredirect=1#comment136728628_77513113
+    # Update this may have been solved check the issue I created here: https://github.com/google/sentencepiece/issues/939#issuecomment-1868233193 
     spm.SentencePieceTrainer.train(f'--input={",".join(file_paths)} --model_prefix=m --vocab_size=499 --model_type=bpe')
  
     sp = spm.SentencePieceProcessor()
