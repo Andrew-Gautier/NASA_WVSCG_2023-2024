@@ -101,14 +101,18 @@ def strip(code_lines):
             # Preserve lines of code
             stripped_lines.append(token.value)
         elif token.type == 'ERROR_CODE':
-            stripped_lines.appent('X')    
+            stripped_lines.append('X')    
         last_token = token  # Update last_token
         
     return stripped_lines, token_counts, token_lines
 
+def remove_empty_lines(output_lines):
+    # Filter out totally empty lines
+    filtered_lines = [line for line in output_lines if line.strip() != '']
+    return filtered_lines
 
 # Example usage
-c_code = session.query(TestCase).filter_by(id=1000).first()
+c_code = session.query(TestCase).filter_by(id=62917).first()
 # Then split this into lines
 
 c_code_content = c_code.file_content.split('\n')
@@ -130,3 +134,5 @@ for code_line in token_lines['CODE']:
         print(f"Line {code_line} contains both code and comment.")
     # else:
     #     print(f"Line {code_line} contains code only.")
+
+    

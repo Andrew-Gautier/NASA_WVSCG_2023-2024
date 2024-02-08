@@ -3,7 +3,7 @@ import os
 import re
 from sarif_om import SarifLog
 import json
-from Project_1.sarif_loader import Folder, SourceCodeFile, Manifest, Vulnerability, sessionmaker, engine
+from Project_1.old_db_loader import Folder, SourceCodeFile, Manifest, Vulnerability, sessionmaker, engine
 from sqlalchemy import text
 
 def remove_comments(root_dir):
